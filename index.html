@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<title>Progress</title>
+</head>
+<body>
+    <div class="container mt-5">	
+        
+        <div class="arrow-steps clearfix mb-5">
+            <div class="step current"> <span> Step 1</span> </div>
+            <div class="step"> <span>Step 2</span> </div>
+            <div class="step"> <span> Step 3</span> </div>
+            <div class="step"> <span>Step 4</span> </div>
+            <div class="step"> <span>Step 5</span> </div>
+            <div class="step d-none"> <span>Step 5</span> </div>
+        </div>
+        <div class="progress-area">
+            <span>Step 1</span>
+            <div class="progress my-3 rounded-0">
+                <div class="progress-bar progress-bar-striped num-1 rounded" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span>Step 2</span>
+            <div class="progress my-3 rounded-0">
+                <div class="progress-bar progress-bar-striped num-2 rounded" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span>Step 3</span>
+            <div class="progress my-3 rounded-0">
+                <div class="progress-bar progress-bar-striped num-3 rounded" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span>Step 4</span>
+            <div class="progress my-3 rounded-0">
+                <div class="progress-bar progress-bar-striped num-4 rounded" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <span>Step 5</span>
+            <div class="progress my-3 rounded-0">
+                <div class="progress-bar progress-bar-striped num-5 rounded" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between nav">
+            <a href="#" class="prev btn">Stop</a>
+            <a href="#" class="next btn">Start</a>
+            <a href="#" class="reset btn">Reset</a>
+        </div>
+        
+    </div>
+<script>
+
+$(document).ready(function() {
+		
+    var back =$(".prev");
+    var	next = $(".next");
+    var	steps = $(".step");
+    var reset = $(".reset");
+    var progressbar = $(".progress-bar");    
+    var timerId = 0;
+
+    function nextStep() {
+        $.each( steps, function( i ) {
+                if (!$(steps[i]).hasClass('current') && !$(steps[i]).hasClass('done')) {
+                    
+                    var tId = 0;
+                    var ctr=0;
+                    var max=100;
+
+                    tId = setInterval(function () {
+
+                        ctr++;
+                        if (ctr > max) {
+                            $(steps[i]).addClass('current');
+                            $(steps[i - 1]).removeClass('current').addClass('done');
+                            clearInterval(tId);
+                        } else {
+                            // $('.num-' + i).attr("style","width:" + ctr*2 + "%").html(ctr + '/ 100');
+                            var dt = new Date();
+                            var n = dt.getTime();
+                            console.log('start = ', n);
+                            $('.num-' + i).css('width', ctr + '%');
+                            $('.num-' + i).html(ctr + '/ 100');
+                            var dt2 = new Date();
+                            var n2 = dt2.getTime();
+                            console.log('end = ', n2);
+                        }
+                    }, 100);
+
+                    $('.prev').click(function () {
+                        clearInterval(tId);
+                        clearInterval(timerId);
+                    });
+
+                    $('.reset').click(function() {
+                        clearInterval(tId);
+                        clearInterval(timerId);
+                    })
+
+                    return false;
+                }
+            });
+    };
+
+    function autoCall(cnt) {
+        var nCtr = 1;
+        var maxTimes = cnt;       
+
+        timerId = setInterval(function() {
+            nextStep();
+            if (nCtr == maxTimes - 1) {
+                console.log('Good Luck...');
+                clearInterval(timerId);
+            };
+
+            nCtr++;
+        }, 12000);
+
+    };
+
+    next.bind("click", function() {
+        nextStep();
+        autoCall(5);
+    });
+
+    reset.bind("click", function() {
+
+        $.each( steps, function(i) {
+            $(steps[i]).removeClass('current');
+            $(steps[i]).removeClass('done');
+        });
+
+        $.each( progressbar, function(i) {
+            $(progressbar[i]).css('width', 0+'%').attr('aria-valuenow', 0);
+        });
+
+        $(steps[0]).addClass("current");
+        
+        return false;
+    });
+});
+
+</script>
+</body>
+</html>
